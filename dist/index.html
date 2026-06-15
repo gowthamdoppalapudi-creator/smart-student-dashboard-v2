@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Student Productivity Dashboard</title>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  
+  <script type="module" crossorigin src="/assets/index-0000ecdb.js"></script>
+  <link rel="stylesheet" href="/assets/index-0fc634cd.css">
+</head>
+<body>
+
+  <div id="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <span class="logo-text">SmartStudent</span>
+      </div>
+      
+      <div class="sidebar-profile">
+        <div class="profile-avatar">ST</div>
+        <div class="profile-info">
+          <span class="profile-name">Student Panel</span>
+          <span class="profile-rank"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="menu-item active" data-view="dashboard">
+          <a><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        </li>
+        <li class="menu-item" data-view="subjects">
+          <a><i class="fa-solid fa-book-bookmark"></i> Subjects</a>
+        </li>
+        <li class="menu-item" data-view="planner">
+          <a><i class="fa-solid fa-calendar-check"></i> Study Planner</a>
+        </li>
+        <li class="menu-item" data-view="dsa">
+          <a><i class="fa-solid fa-code"></i> DSA Progress</a>
+        </li>
+        <li class="menu-item" data-view="notes">
+          <a><i class="fa-solid fa-pen-to-square"></i> Notes Section</a>
+        </li>
+        <li class="menu-item" data-view="tools">
+          <a><i class="fa-solid fa-stopwatch"></i> Focus & Exams</a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <button id="theme-toggle-btn" class="theme-toggle-btn">
+          <i class="fa-solid fa-sun"></i> Light Mode
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Frame -->
+    <main class="main-content">
+      
+      <!-- Top Sticky Header -->
+      <header class="top-header">
+        <div class="d-flex align-items-center gap-3">
+          <button id="sidebar-toggle-btn" class="sidebar-toggle-btn">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="header-title-wrapper">
+            <h1 id="view-title">Productivity Dashboard</h1>
+            <p id="view-subtitle">Organize your academic performance and consistency.</p>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <div id="header-streak" class="streak-badge">
+            <i class="fa-solid fa-fire"></i> 0 Day Streak
+          </div>
+          <div id="header-date" class="header-date">
+            June 15, 2026
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Views Section -->
+      <div class="content-body">
+        
+        <!-- 1. Dashboard Overview Tab -->
+        <section id="dashboard-view" class="view-section active">
+          <!-- Stat Grid -->
+          <div class="card-grid">
+            <div class="glass-card stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Subjects</span>
+                <span class="stat-value" id="stat-total-subjects">0</span>
+                <span class="stat-sub">Tracked Courses</span>
+              </div>
+              <div class="stat-icon primary">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+            </div>
+
+            <div class="glass-card stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Tasks Done</span>
+                <span class="stat-value" id="stat-task-progress">0/0</span>
+                <span class="stat-sub" id="stat-task-sub">0% Completed</span>
+              </div>
+              <div class="stat-icon success">
+                <i class="fa-solid fa-list-check"></i>
+              </div>
+            </div>
+
+            <div class="glass-card stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Current Streak</span>
+                <span class="stat-value" id="stat-streak-val">0 Days</span>
+                <span class="stat-sub">Study Consistency</span>
+              </div>
+              <div class="stat-icon warning">
+                <i class="fa-solid fa-fire"></i>
+              </div>
+            </div>
+
+            <div class="glass-card stat-card">
+              <div class="stat-info">
+                <span class="stat-label">DSA Rank</span>
+                <span class="stat-value" id="stat-dsa-rank">Rookie</span>
+                <span class="stat-sub" id="stat-dsa-sub">🐣 0 Problems</span>
+              </div>
+              <div class="stat-icon secondary">
+                <i class="fa-solid fa-code"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts and Analytics Grid -->
+          <div class="dashboard-analytics-grid">
+            <div class="glass-card chart-card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-chart-column text-primary"></i> Study Productivity (By Subject)</h3>
+              </div>
+              <div class="chart-container">
+                <canvas id="study-productivity-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="glass-card chart-card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-circle-nodes text-secondary"></i> DSA Difficulty Distribution</h3>
+              </div>
+              <div class="chart-container">
+                <canvas id="dsa-distribution-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity log feed -->
+          <div class="glass-card mb-4">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-receipt text-warning"></i> Recent Activities</h3>
+            </div>
+            <div class="activity-list" id="dashboard-activities">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Subject Manager Tab -->
+        <section id="subjects-view" class="view-section">
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+              <h2>Tracked Courses & Subjects</h2>
+              <p class="text-secondary">Organize study workloads and progress by subject tags.</p>
+            </div>
+            <button id="add-subject-modal-btn" class="btn btn-primary">
+              <i class="fa-solid fa-plus"></i> Add Subject
+            </button>
+          </div>
+          <div class="subject-grid" id="subject-cards-container">
+            <!-- Loaded via JS -->
+          </div>
+        </section>
+
+        <!-- 3. Study Planner Tab -->
+        <section id="planner-view" class="view-section">
+          <div class="planner-layout">
+            <!-- Left: Filter & List -->
+            <div>
+              <div class="task-filters" id="task-filters-container">
+                <!-- Buttons load via JS -->
+              </div>
+              
+              <div class="glass-card">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fa-solid fa-clipboard-list text-primary"></i> Scheduled Learning Tasks</h3>
+                </div>
+                <div class="task-list" id="task-list-items">
+                  <!-- Load via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Create Form -->
+            <div class="glass-card" style="height: fit-content">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-square-plus text-secondary"></i> Add Study Task</h3>
+              </div>
+              <form id="task-form">
+                <div class="form-group">
+                  <label for="task-title">Task Title</label>
+                  <input type="text" id="task-title" class="form-control" placeholder="e.g. Complete lecture notes" required>
+                </div>
+                <div class="form-group">
+                  <label for="task-subject">Subject</label>
+                  <select id="task-subject" class="form-control" required>
+                    <!-- Loaded via JS -->
+                  </select>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="task-priority">Priority</label>
+                    <select id="task-priority" class="form-control">
+                      <option value="low">Low</option>
+                      <option value="medium" selected>Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="task-duration">Est. Duration (mins)</label>
+                    <input type="number" id="task-duration" class="form-control" placeholder="45" min="5" max="300" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="task-due-date">Due Date</label>
+                  <input type="date" id="task-due-date" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-2">
+                  <i class="fa-solid fa-plus"></i> Schedule Task
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. DSA Progress Tracker Tab -->
+        <section id="dsa-view" class="view-section">
+          <div class="dsa-tracker-layout">
+            <!-- Left stats, progression, log form -->
+            <div class="d-flex flex-column gap-4">
+              <!-- Rank Card -->
+              <div class="glass-card dsa-rank-card">
+                <div class="rank-badge-large" id="dsa-rank-icon-big">🐣</div>
+                <h3 class="rank-title-large" id="dsa-rank-display">Rookie</h3>
+                <p class="rank-desc">Total problems solved: <strong id="dsa-solved-count">0</strong></p>
+              </div>
+
+              <!-- Next Rank Progression -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <h4 class="card-title" style="font-size: 0.95rem"><i class="fa-solid fa-stairs text-secondary"></i> Rank Progression</h4>
+                  <span id="dsa-progress-percent" style="font-size: 0.8rem; font-weight:700">0%</span>
+                </div>
+                <div class="progress-bar-bg" style="height: 10px; margin-bottom: 12px">
+                  <div class="progress-bar-fill" id="dsa-progress-fill" style="width: 0%"></div>
+                </div>
+                <p id="dsa-progress-desc" class="text-secondary" style="font-size: 0.75rem; line-height: 1.4"></p>
+              </div>
+
+              <!-- Log Problem Form -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fa-solid fa-circle-check text-success"></i> Log Practice Problem</h3>
+                </div>
+                <form id="dsa-form">
+                  <div class="form-group">
+                    <label for="dsa-title">Problem Title</label>
+                    <input type="text" id="dsa-title" class="form-control" placeholder="e.g. Reverse Linked List" required>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="dsa-difficulty">Difficulty</label>
+                      <select id="dsa-difficulty" class="form-control">
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="dsa-platform">Platform</label>
+                      <select id="dsa-platform" class="form-control">
+                        <option value="LeetCode">LeetCode</option>
+                        <option value="HackerRank">HackerRank</option>
+                        <option value="Codeforces">Codeforces</option>
+                        <option value="GeeksforGeeks">GeeksforGeeks</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="dsa-url">Problem Link (Optional)</label>
+                    <input type="url" id="dsa-url" class="form-control" placeholder="https://leetcode.com/...">
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100 mt-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Log Solution
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right Solved list -->
+            <div class="glass-card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-code-branch text-primary"></i> Solved Problems History</h3>
+              </div>
+              <div class="table-wrapper">
+                <table class="dsa-table">
+                  <thead>
+                    <tr>
+                      <th>Problem Name</th>
+                      <th>Difficulty</th>
+                      <th>Platform</th>
+                      <th>Solved Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dsa-problems-list">
+                    <!-- Loaded via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Notes Section Tab -->
+        <section id="notes-view" class="view-section">
+          <div class="notes-header-actions">
+            <div class="search-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="note-search" class="form-control" placeholder="Search notes by title, tag, or content...">
+            </div>
+            <button id="add-note-btn" class="btn btn-primary">
+              <i class="fa-solid fa-file-signature"></i> Create Note
+            </button>
+          </div>
+          
+          <div class="notes-grid" id="notes-grid">
+            <!-- Loaded via JS -->
+          </div>
+        </section>
+
+        <!-- 6. Focus & Exams Tab -->
+        <section id="tools-view" class="view-section">
+          <div class="timer-countdown-grid">
+            
+            <!-- Left: Pomodoro Timer -->
+            <div class="glass-card timer-card">
+              <div class="card-header w-100">
+                <h3 class="card-title"><i class="fa-solid fa-stopwatch text-secondary"></i> Smart Pomodoro focus</h3>
+              </div>
+              
+              <div class="timer-options">
+                <button id="timer-opt-focus" class="timer-option-btn active">Focus Session</button>
+                <button id="timer-opt-short" class="timer-option-btn">Short Break</button>
+                <button id="timer-opt-long" class="timer-option-btn">Long Break</button>
+              </div>
+
+              <div class="timer-display-container">
+                <svg class="timer-svg" width="240" height="240">
+                  <circle class="timer-circle-bg" cx="120" cy="120" r="110"></circle>
+                  <circle class="timer-circle-progress" cx="120" cy="120" r="110"></circle>
+                </svg>
+                <span id="timer-time-display" class="timer-text">25:00</span>
+              </div>
+
+              <div class="timer-actions">
+                <button id="timer-start" class="btn btn-primary">
+                  <i class="fa-solid fa-play"></i> Start
+                </button>
+                <button id="timer-pause" class="btn btn-warning" style="display: none">
+                  <i class="fa-solid fa-pause"></i> Pause
+                </button>
+                <button id="timer-reset" class="btn">
+                  <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Upcoming Exams Countdown -->
+            <div class="exams-section">
+              <div class="glass-card">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fa-solid fa-hourglass-start text-primary"></i> Exam Deadlines</h3>
+                </div>
+                <div class="exam-list-container" id="exams-list-container">
+                  <!-- Loaded via JS -->
+                </div>
+              </div>
+
+              <div class="glass-card">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fa-solid fa-calendar-plus text-secondary"></i> Schedule New Exam</h3>
+                </div>
+                <form id="exam-form">
+                  <div class="form-group">
+                    <label for="exam-name">Exam / Test Name</label>
+                    <input type="text" id="exam-name" class="form-control" placeholder="e.g. Physics Midterm" required>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="exam-subject">Course Subject</label>
+                      <select id="exam-subject" class="form-control" required>
+                        <!-- Loaded via JS -->
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="exam-date">Date & Time</label>
+                      <input type="datetime-local" id="exam-date" class="form-control" required>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100 mt-2">
+                    <i class="fa-solid fa-calendar-check"></i> Add Countdown
+                  </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- --- MODALS --- -->
+
+  <!-- A. Subject Creation Modal Overlay -->
+  <div id="subject-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Subject</h3>
+        <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="subject-form">
+        <div class="form-group">
+          <label for="subject-name">Subject Name</label>
+          <input type="text" id="subject-name" class="form-control" placeholder="e.g. Inorganic Chemistry" required>
+        </div>
+        <div class="form-group">
+          <label>Theme Color Selection</label>
+          <div class="color-dot-picker">
+            <span class="color-dot selected" style="background-color: #6366f1" data-color="#6366f1"></span>
+            <span class="color-dot" style="background-color: #ec4899" data-color="#ec4899"></span>
+            <span class="color-dot" style="background-color: #10b981" data-color="#10b981"></span>
+            <span class="color-dot" style="background-color: #f59e0b" data-color="#f59e0b"></span>
+            <span class="color-dot" style="background-color: #8b5cf6" data-color="#8b5cf6"></span>
+            <span class="color-dot" style="background-color: #ef4444" data-color="#ef4444"></span>
+            <span class="color-dot" style="background-color: #0ea5e9" data-color="#0ea5e9"></span>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" class="btn modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Course</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- B. Notes Editor Modal Overlay -->
+  <div id="note-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 700px">
+      <div class="modal-header">
+        <h3>Note Card Details</h3>
+        <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="form-group">
+        <label for="note-modal-title">Note Title</label>
+        <input type="text" id="note-modal-title" class="form-control" placeholder="Untitled Note" required>
+      </div>
+      <div class="form-group">
+        <label for="note-modal-content">Study Summary / Markdown notes</label>
+        <textarea id="note-modal-content" class="form-control" rows="8" placeholder="Summarize your lecture or build check-lists here..." style="resize: vertical"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="note-modal-tags">Tags (Comma Separated)</label>
+        <input type="text" id="note-modal-tags" class="form-control" placeholder="e.g. Maths, Calculus, ExamTips">
+      </div>
+      <div class="form-group">
+        <label>Theme Card Color</label>
+        <div class="color-dot-picker">
+          <span class="color-dot selected" style="background-color: #6366f1" data-color="#6366f1"></span>
+          <span class="color-dot" style="background-color: #ec4899" data-color="#ec4899"></span>
+          <span class="color-dot" style="background-color: #10b981" data-color="#10b981"></span>
+          <span class="color-dot" style="background-color: #f59e0b" data-color="#f59e0b"></span>
+          <span class="color-dot" style="background-color: #8b5cf6" data-color="#8b5cf6"></span>
+          <span class="color-dot" style="background-color: #ef4444" data-color="#ef4444"></span>
+          <span class="color-dot" style="background-color: #0ea5e9" data-color="#0ea5e9"></span>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn modal-cancel">Cancel</button>
+        <button type="button" id="save-note-modal-btn" class="btn btn-primary">Save Note</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Modules -->
+  
+  
+  
+</body>
+</html>
